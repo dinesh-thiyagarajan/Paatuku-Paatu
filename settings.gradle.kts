@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "Paatuku Paatu"
 include(":app")
+include(":MediaQuery")
