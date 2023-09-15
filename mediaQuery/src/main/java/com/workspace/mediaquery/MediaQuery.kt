@@ -8,7 +8,9 @@ import android.provider.MediaStore
 import com.workspace.mediaquery.data.Audio
 import kotlinx.coroutines.flow.flow
 
+
 class MediaQuery(private val applicationContentResolver: ContentResolver) {
+
     suspend fun queryAudio() = flow {
         val audioList = mutableListOf<Audio>()
 
