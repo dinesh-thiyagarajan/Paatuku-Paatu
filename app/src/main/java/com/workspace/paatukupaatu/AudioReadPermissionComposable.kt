@@ -1,48 +1,58 @@
 package com.workspace.paatukupaatu
 
 import android.Manifest
-import android.content.Intent
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.SideEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.LifecycleOwner
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.PermissionStatus
 import com.google.accompanist.permissions.rememberPermissionState
-import com.workspace.mediaquery.MediaQuery
-import com.workspace.paatukupaatu.MusicPlayerService.Companion.URI_KEY
-import kotlinx.coroutines.flow.collectLatest
+import com.workspace.paatukupaatu.ui.viewModel.AudioViewModel
 import kotlinx.coroutines.launch
 
 @Composable
 @OptIn(ExperimentalPermissionsApi::class)
 fun AudioReadPermissionComposable() {
+
+    val audioViewModel: AudioViewModel = hiltViewModel()
     val coroutineScope = rememberCoroutineScope()
     val audioPermissionState = rememberPermissionState(
         Manifest.permission.READ_MEDIA_AUDIO
     )
 
-    val localContext = LocalContext.current
+    val audios = audioViewModel.audios.collectAsState()
+
+    LazyColumn(
+        modifier = Modifier.fillMaxWidth(),
+        contentPadding = PaddingValues(16.dp)
+    ) {
+        items(audios.value) {
+            Text(text = it.name)
+        }
+    }
 
     when (audioPermissionState.status) {
         PermissionStatus.Granted -> {
             SideEffect {
                 coroutineScope.launch {
-                    MediaQuery(localContext.contentResolver).queryAudio().collectLatest {
-                        Log.e("Result", it.toString())
-                        val intent = Intent(localContext, MusicPlayerService::class.java)
-                        intent.putExtra(URI_KEY, it[0].uri.toString())
-                        localContext.startService(intent)
-                    }
+                    audioViewModel.getAudioFiles()
                 }
             }
         }

@@ -54,6 +54,13 @@ android {
         correctErrorTypes = true
     }
 
+    hilt {
+        enableExperimentalClasspathAggregation = true
+    }
+    composeOptions {
+        kotlinCompilerExtensionVersion = "1.4.1"
+    }
+
 }
 
 dependencies {
@@ -68,8 +75,10 @@ dependencies {
     implementation("androidx.compose.ui:ui-tooling-preview")
     implementation("androidx.compose.material3:material3")
     implementation(libs.accompanist.permissions)
-    api(libs.hilt.android)
+    implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+    implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
+    implementation("androidx.compose.runtime:runtime:1.5.1")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.espresso.core)
