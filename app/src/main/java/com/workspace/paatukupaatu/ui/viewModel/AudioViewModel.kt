@@ -21,8 +21,7 @@ import javax.inject.Inject
 class AudioViewModel @Inject constructor(
     private val getAudioFilesUseCase: GetAudioFilesUseCase,
     @ApplicationContext private val applicationContext: Context
-) :
-    ViewModel() {
+) : ViewModel() {
 
     private val _audios: MutableStateFlow<List<Audio>> = MutableStateFlow(listOf())
     val audios: StateFlow<List<Audio>> = _audios

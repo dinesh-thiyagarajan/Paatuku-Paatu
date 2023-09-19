@@ -1,4 +1,4 @@
-package com.workspace.paatukupaatu
+package com.workspace.paatukupaatu.ui.composables
 
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
