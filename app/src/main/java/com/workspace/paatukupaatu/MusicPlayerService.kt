@@ -8,10 +8,11 @@ import android.app.Service
 import android.content.Intent
 import android.media.AudioManager
 import android.media.MediaPlayer
-import android.net.Uri
+import android.os.Build
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
+import com.workspace.mediaquery.data.Audio
 
 
 class MusicPlayerService : Service() {
@@ -20,8 +21,10 @@ class MusicPlayerService : Service() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
 
-        val receivedUri = intent?.extras.let {
-            it?.getString(URI_KEY)
+        val audio = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            intent?.getParcelableExtra(AUDIO_DATA, Audio::class.java)
+        } else {
+            intent?.getParcelableExtra(AUDIO_DATA)
         }
 
         val notificationIntent = Intent(this, MainActivity::class.java)
@@ -41,17 +44,17 @@ class MusicPlayerService : Service() {
         manager.createNotificationChannel(channel)
 
         val notification = NotificationCompat.Builder(this, "101")
-            .setContentTitle("Song Song")
-            .setContentText("Paatu")
+            .setContentTitle(audio?.name)
+            .setContentText(audio?.mimeType)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setContentIntent(pendingIntent)
             .build()
 
         startForeground(1, notification)
 
-        receivedUri?.let {
+        audio?.let {
             mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
-            mediaPlayer.setDataSource(this.applicationContext, Uri.parse(it))
+            mediaPlayer.setDataSource(this.applicationContext, it.uri)
             mediaPlayer.prepare()
             mediaPlayer.start()
         }
@@ -61,10 +64,6 @@ class MusicPlayerService : Service() {
         }
 
         return START_NOT_STICKY
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -80,6 +79,6 @@ class MusicPlayerService : Service() {
     companion object {
         private const val NOTIFICATION_CHANNEL_NAME = "paatukupaatu"
         private const val NOTIFICATION_CHANNEL_ID = "101"
-        const val URI_KEY = "uri"
+        const val AUDIO_DATA = "audio_data"
     }
 }

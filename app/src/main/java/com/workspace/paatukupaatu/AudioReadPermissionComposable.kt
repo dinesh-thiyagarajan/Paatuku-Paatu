@@ -3,6 +3,7 @@ package com.workspace.paatukupaatu
 import android.Manifest
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,6 +16,7 @@ import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -44,7 +46,9 @@ fun AudioReadPermissionComposable() {
         contentPadding = PaddingValues(16.dp)
     ) {
         items(audios.value) {
-            Text(text = it.name)
+            Text(text = it.name, modifier = Modifier.clickable {
+                audioViewModel.audioSelected(it)
+            })
         }
     }
 

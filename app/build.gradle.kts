@@ -77,6 +77,10 @@ dependencies {
     implementation(libs.accompanist.permissions)
     implementation(libs.hilt.android)
     kapt(libs.hilt.compiler)
+
+    // TODO Dupliate Hilt dependency is be added in every new modules currently
+    // TODO We Can avoid this by adding build logic in kotlin and apply the plugins to needed child modules
+
     implementation("androidx.hilt:hilt-navigation-compose:1.0.0")
     implementation("androidx.compose.runtime:runtime:1.5.1")
     testImplementation(libs.junit)
