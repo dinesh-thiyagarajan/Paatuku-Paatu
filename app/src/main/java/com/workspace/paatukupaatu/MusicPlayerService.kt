@@ -6,11 +6,10 @@ import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
-import android.media.AudioManager
+import android.media.AudioAttributes
 import android.media.MediaPlayer
 import android.os.Build
 import android.os.IBinder
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import com.workspace.mediaquery.data.Audio
 
@@ -43,7 +42,7 @@ class MusicPlayerService : Service() {
         channel.description = "This is channel 2"
         manager.createNotificationChannel(channel)
 
-        val notification = NotificationCompat.Builder(this, "101")
+        val notification = NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
             .setContentTitle(audio?.name)
             .setContentText(audio?.mimeType)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
@@ -53,17 +52,20 @@ class MusicPlayerService : Service() {
         startForeground(1, notification)
 
         audio?.let {
-            mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC)
+            val audioAttributes = AudioAttributes.Builder().build()
+            mediaPlayer.reset()
+            mediaPlayer.setAudioAttributes(audioAttributes)
             mediaPlayer.setDataSource(this.applicationContext, it.uri)
             mediaPlayer.prepare()
             mediaPlayer.start()
         }
 
-        mediaPlayer.setOnCompletionListener {
-            Log.e("State", it.isPlaying.toString())
-        }
-
         return START_NOT_STICKY
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mediaPlayer.release()
     }
 
     override fun onBind(intent: Intent?): IBinder? {
@@ -71,8 +73,8 @@ class MusicPlayerService : Service() {
     }
 
     override fun stopService(name: Intent?): Boolean {
-        mediaPlayer.release()
         mediaPlayer.stop()
+        mediaPlayer.release()
         return super.stopService(name)
     }
 
