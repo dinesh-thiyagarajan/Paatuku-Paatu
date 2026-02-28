@@ -1,4 +1,4 @@
-package com.workspace.paatukupaatu.domain
+package com.workspace.mediaquery.domain
 
 import com.workspace.mediaquery.MediaQuery
 

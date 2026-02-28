@@ -16,3 +16,9 @@ dependencyResolutionManagement {
 rootProject.name = "Paatuku Paatu"
 include(":app")
 include(":mediaQuery")
+include(":database")
+include(":player")
+include(":home")
+include(":nowplaying")
+include(":favorites")
+include(":about")

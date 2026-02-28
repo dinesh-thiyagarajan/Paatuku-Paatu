@@ -11,15 +11,15 @@ buildscript {
 
 
 plugins {
-    id("com.android.application") version "8.1.0-rc01" apply false
-    id("org.jetbrains.kotlin.android") version "1.8.0" apply false
+    id("com.android.application") version "8.5.2" apply false
+    id("org.jetbrains.kotlin.android") version "1.9.0" apply false
     alias(libs.plugins.com.android.library) apply false
-    alias(libs.plugins.hilt) apply false
     id("com.diffplug.spotless") version "6.9.0" apply false
+    alias(libs.plugins.ksp) apply false
 }
 
 subprojects {
     afterEvaluate {
-        project.apply("../spotless.gradle")
+        project.apply("${rootProject.projectDir}/spotless.gradle")
     }
 }
